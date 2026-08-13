@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  name         String?
+  createdAt    DateTime  @default(now())
+  weddings     Wedding[]
+}
+
+model Wedding {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partnerNames  String
+  weddingDate   DateTime?
+  venue         String?
+  guestCountEst Int?
+  budgetTotal   Decimal? @db.Decimal(10, 2)
+  // Freeform style intake captured by the planning chat: palette, vibe words,
+  // must-haves, non-negotiables, etc. Kept as JSON so the assistant can extend
+  // it without a migration every time.
+  stylePrefs    Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  moodBoardItems MoodBoardItem[]
+  chatMessages   ChatMessage[]
+  guests         Guest[]
+  vendors        Vendor[]
+  budgetItems    BudgetItem[]
+  documents      Document[]
+}
+
+model MoodBoardItem {
+  id         String   @id @default(cuid())
+  weddingId  String
+  wedding    Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  type       String   // "image" | "link"
+  url        String
+  sourceSite String?  // "pinterest" | "etsy" | "upload" | "other"
+  title      String?
+  tags       String[]
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  weddingId String
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  role      String   // "user" | "assistant"
+  content   String
+  createdAt DateTime @default(now())
+}
+
+model Guest {
+  id         String   @id @default(cuid())
+  weddingId  String
+  wedding    Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  name       String
+  email      String?
+  address    String?
+  group      String?  // e.g. "bride's family", "groom's friends", "work"
+  rsvpStatus String   @default("pending") // pending | yes | no
+  plusOne    Boolean  @default(false)
+  mealChoice String?
+  notes      String?
+  createdAt  DateTime @default(now())
+}
+
+model Vendor {
+  id          String   @id @default(cuid())
+  weddingId   String
+  wedding     Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  category    String   // florist | caterer | photographer | venue | dj | ...
+  name        String
+  contactName String?
+  email       String?
+  phone       String?
+  status      String   @default("researching") // researching | contacted | booked | paid
+  cost        Decimal? @db.Decimal(10, 2)
+  contractUrl String?
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  budgetItems BudgetItem[]
+}
+
+model BudgetItem {
+  id            String    @id @default(cuid())
+  weddingId     String
+  wedding       Wedding   @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  vendorId      String?
+  vendor        Vendor?   @relation(fields: [vendorId], references: [id], onDelete: SetNull)
+  category      String
+  description   String?
+  estimatedCost Decimal   @db.Decimal(10, 2)
+  actualCost    Decimal?  @db.Decimal(10, 2)
+  paid          Boolean   @default(false)
+  dueDate       DateTime?
+  createdAt     DateTime  @default(now())
+}
+
+model Document {
+  id        String   @id @default(cuid())
+  weddingId String
+  wedding   Wedding  @relation(fields: [weddingId], references: [id], onDelete: Cascade)
+  type      String   // "timeline" | "checklist" | "vendor_contract" | "seating"
+  title     String
+  format    String   // "pdf"
+  fileUrl   String?
+  content   String?  // source text/markdown used to render the file
+  createdAt DateTime @default(now())
+}
