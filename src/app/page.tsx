@@ -48,7 +48,7 @@ export default function LandingPage() {
         </h1>
         <p className="mt-6 text-lg text-ink-soft max-w-xl">
           Aisle keeps your vision, your vendors, your guest list, and your budget in one place —
-          and does the drafting for you when you're ready to move.
+          and does the drafting for you when you&apos;re ready to move.
         </p>
         <div className="mt-8 flex items-center gap-4">
           <Link href="/signup" className="btn-primary">Start planning</Link>
@@ -70,7 +70,7 @@ export default function LandingPage() {
       </section>
 
       <footer className="max-w-5xl mx-auto px-6 py-10 text-xs text-ink-soft border-t border-line">
-        Aisle — built for couples who'd rather plan once than plan everywhere.
+        Aisle — built for couples who&apos;d rather plan once than plan everywhere.
       </footer>
     </main>
   );

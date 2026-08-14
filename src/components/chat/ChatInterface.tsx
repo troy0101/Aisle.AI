@@ -57,7 +57,7 @@ export function ChatInterface({ initialMessages }: { initialMessages: ChatMessag
       <div className="flex-1 overflow-y-auto space-y-4 pr-2">
         {messages.length === 0 && (
           <p className="text-sm text-ink-soft">
-            Tell your planner what you're picturing — a vibe, a must-have, a budget worry. It'll take it from there.
+            Tell your planner what you&apos;re picturing — a vibe, a must-have, a budget worry. It&apos;ll take it from there.
           </p>
         )}
         {messages.map((m) => (

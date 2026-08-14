@@ -73,6 +73,15 @@ Blob for mood board images and generated PDFs.
    ```
    Visit `http://localhost:3000`.
 
+## Testing and CI
+
+- Run `npm run test:watch` while developing.
+- Run `npm run test:run` for a one-off local check, which matches the GitHub Actions job.
+- GitHub Actions now runs install, Prisma client generation, lint, build, and tests on pushes and
+   pull requests to `main`.
+- If you add tests that touch the database, point CI at a dedicated test `DATABASE_URL` instead of
+   production credentials.
+
 ## Pushing to GitHub
 
 ```bash
